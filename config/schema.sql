@@ -1,5 +1,5 @@
 -- BookMind Database Schema
--- MySQL Schema for Book Tracking Application
+-- MySQL Schema for Simple Book Tracking Application
 
 -- Create the books table
 CREATE TABLE IF NOT EXISTS books (
@@ -15,14 +15,8 @@ CREATE TABLE IF NOT EXISTS books (
   CONSTRAINT chk_rating CHECK (rating >= 1 AND rating <= 5 OR rating IS NULL)
 );
 
--- Create an index on title for faster search
+-- Create indexes for books
 CREATE INDEX idx_books_title ON books(title);
-
--- Create an index on author for analytics
 CREATE INDEX idx_books_author ON books(author);
-
--- Create an index on date_read for sorting
 CREATE INDEX idx_books_date_read ON books(date_read DESC);
-
--- Create an index on rating for sorting
 CREATE INDEX idx_books_rating ON books(rating DESC);

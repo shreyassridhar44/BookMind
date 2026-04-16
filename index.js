@@ -1,15 +1,15 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const expressLayouts = require('express-ejs-layouts'); // 1. Import the package
+const expressLayouts = require('express-ejs-layouts');
 const bookRoutes = require('./routes/bookRoutes');
 
 // Initialize Express app
 const app = express();
 
 // View Engine Setup
-app.use(expressLayouts); // 2. Tell Express to use EJS layouts
-app.set('layout', 'layout'); // 3. Set the default layout file (points to views/layout.ejs)
+app.use(expressLayouts);
+app.set('layout', 'layout');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 

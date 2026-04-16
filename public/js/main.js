@@ -101,7 +101,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (result.success) {
         showFlashMessage(result.message, 'success');
         closeModal();
-        // Reload the page to show updated data
         setTimeout(() => {
           window.location.reload();
         }, 500);
@@ -131,7 +130,11 @@ document.addEventListener('DOMContentLoaded', function() {
       
       searchTimeout = setTimeout(async () => {
         try {
-          const response = await fetch(`/search?q=${encodeURIComponent(searchTerm)}`);
+          const response = await fetch(`/search?q=${encodeURIComponent(searchTerm)}`, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
           const result = await response.json();
           
           if (result.success) {
@@ -170,7 +173,6 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    // Helper function to get correct URL
     const getCoverUrl = (coverId) => {
       const cleanId = coverId.trim().toUpperCase();
       let type = 'id';
@@ -232,7 +234,6 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     `).join('');
     
-    // Re-attach event listeners to new buttons
     attachEventListeners();
   }
   
@@ -247,19 +248,21 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Attach Event Listeners to dynamically created buttons
   function attachEventListeners() {
-    // Edit buttons
     document.querySelectorAll('.btn-edit').forEach(btn => {
-      // PREVENT DOUBLE BINDING: Check if we already attached a listener to this button
       if (btn.dataset.bound) return;
       btn.dataset.bound = "true";
 
       btn.addEventListener('click', async (e) => {
         const bookId = e.currentTarget.dataset.id;
-        
+
         try {
-          const response = await fetch(`/books/${bookId}`);
+          const response = await fetch(`/books/${bookId}`, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
           const result = await response.json();
-          
+
           if (result.success) {
             openModal('edit', result.book);
           } else {
@@ -272,58 +275,54 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
     
-    // Delete buttons
     document.querySelectorAll('.btn-delete').forEach(btn => {
-      // PREVENT DOUBLE BINDING: Check if we already attached a listener to this button
       if (btn.dataset.bound) return;
       btn.dataset.bound = "true";
 
       btn.addEventListener('click', async (e) => {
         const bookId = e.currentTarget.dataset.id;
-        
-        // Disable the button immediately so they can't double-click it
         const currentBtn = e.currentTarget;
-        currentBtn.style.pointerEvents = 'none';
-        currentBtn.style.opacity = '0.5';
         
         if (confirm('Are you sure you want to delete this book?')) {
+          // Instantly disable the button so it can't be clicked again
+          currentBtn.style.pointerEvents = 'none';
+
           try {
             const response = await fetch(`/books/${bookId}`, {
-              method: 'DELETE'
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json'
+              }
             });
             
             const result = await response.json();
             
             if (result.success) {
               showFlashMessage(result.message, 'success');
-              const bookCard = e.currentTarget.closest('.book-card');
+              const bookCard = currentBtn.closest('.book-card');
+              
+              // Fade it out
               bookCard.style.opacity = '0';
               bookCard.style.transform = 'scale(0.9)';
               
+              // Remove it from the DOM after animation
               setTimeout(() => {
                 bookCard.remove();
                 
+                // If it was the last book, reload to show empty state
                 if (booksGrid && booksGrid.querySelectorAll('.book-card').length === 0) {
                   window.location.reload();
                 }
               }, 300);
             } else {
               showFlashMessage(result.message, 'error');
-              // Re-enable button if it failed
-              currentBtn.style.pointerEvents = 'auto';
-              currentBtn.style.opacity = '1';
+              currentBtn.style.pointerEvents = 'auto'; // re-enable if failed
             }
           } catch (error) {
             console.error('Error deleting book:', error);
             showFlashMessage('Error deleting book', 'error');
-            // Re-enable button if it failed
-            currentBtn.style.pointerEvents = 'auto';
-            currentBtn.style.opacity = '1';
+            currentBtn.style.pointerEvents = 'auto'; // re-enable if failed
           }
-        } else {
-          // Re-enable button if they clicked "Cancel" on the confirm prompt
-          currentBtn.style.pointerEvents = 'auto';
-          currentBtn.style.opacity = '1';
         }
       });
     });
@@ -338,7 +337,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     flashContainer.appendChild(flashMessage);
     
-    // Auto-remove after 3 seconds
     setTimeout(() => {
       flashMessage.style.opacity = '0';
       flashMessage.style.transform = 'translateX(100%)';
