@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  
+  <!-- Google Fonts - Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/styles.css?v=<%= new Date().getTime() %>">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="currentColor"/>
+            <path d="M8 8V24H24V8H8ZM10 10H22V22H10V10Z" fill="white"/>
+            <path d="M12 12H20V14H12V12ZM12 16H18V18H12V16Z" fill="white"/>
+          </svg>
+          <span class="logo-text">BookMind</span>
+        </div>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="/" class="nav-item <%= title.includes('Dashboard') ? 'active' : '' %>">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="/analytics" class="nav-item <%= title.includes('Analytics') ? 'active' : '' %>">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 20V10"></path>
+            <path d="M12 20V4"></path>
+            <path d="M6 20v-6"></path>
+          </svg>
+          <span>Analytics</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Navbar -->
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <h1 class="page-title"><%= title.replace(' - BookMind', '') %></h1>
+        </div>
+        <div class="navbar-right">
+          <button id="addBookBtn" class="btn btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Book
+          </button>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="content-wrapper">
+        <%- body %>
+      </div>
+    </main>
+  </div>
+
+  <!-- Book Modal -->
+  <div id="bookModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add New Book</h2>
+        <button class="modal-close" id="closeModal">&times;</button>
+      </div>
+      <form id="bookForm" class="book-form">
+        <input type="hidden" id="bookId" name="id">
+        
+        <div class="form-group">
+          <label for="title">Title *</label>
+          <input type="text" id="title" name="title" required placeholder="Enter book title">
+        </div>
+        
+        <div class="form-group">
+          <label for="author">Author *</label>
+          <input type="text" id="author" name="author" required placeholder="Enter author name">
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="rating">Rating (1-5)</label>
+            <select id="rating" name="rating">
+              <option value="">Select rating</option>
+              <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+              <option value="4">⭐⭐⭐⭐ (4)</option>
+              <option value="3">⭐⭐⭐ (3)</option>
+              <option value="2">⭐⭐ (2)</option>
+              <option value="1">⭐ (1)</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="date_read">Date Read</label>
+            <input type="date" id="date_read" name="date_read">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="cover_id">Open Library Cover ID (optional)</label>
+          <input type="text" id="cover_id" name="cover_id" placeholder="e.g., OL123456M">
+          <small class="form-hint">Find cover ID at openlibrary.org</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="notes">Notes & Summary</label>
+          <textarea id="notes" name="notes" rows="4" placeholder="Add your notes, highlights, or summary..."></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Add Book</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Flash Messages Container -->
+  <div id="flashMessages"></div>
+
+  <!-- Custom JavaScript -->
+  <script src="/js/main.js?v=<%= new Date().getTime() %>"></script>
+</body>
+</html>

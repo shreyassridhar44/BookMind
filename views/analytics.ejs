@@ -1,0 +1,148 @@
+<!-- Analytics Overview -->
+<div class="analytics-header">
+  <h2>Reading Insights</h2>
+  <p class="analytics-subtitle">Track your reading journey and discover patterns</p>
+</div>
+
+<!-- Detailed Statistics -->
+<div class="analytics-grid">
+  <div class="analytics-card">
+    <div class="analytics-icon books-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+      </svg>
+    </div>
+    <div class="analytics-info">
+      <h3><%= statistics.totalBooks %></h3>
+      <p>Total Books Read</p>
+    </div>
+  </div>
+  
+  <div class="analytics-card">
+    <div class="analytics-icon rating-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+      </svg>
+    </div>
+    <div class="analytics-info">
+      <h3><%= statistics.averageRating %>/5</h3>
+      <p>Average Rating</p>
+    </div>
+  </div>
+  
+  <div class="analytics-card">
+    <div class="analytics-icon author-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+    </div>
+    <div class="analytics-info">
+      <h3><%= statistics.topAuthor.author || 'None' %></h3>
+      <p>Most Read Author (<%= statistics.topAuthor.book_count || 0 %> books)</p>
+    </div>
+  </div>
+  
+  <div class="analytics-card">
+    <div class="analytics-icon calendar-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+      </svg>
+    </div>
+    <div class="analytics-info">
+      <h3><%= statistics.booksThisMonth %></h3>
+      <p>Books This Month</p>
+    </div>
+  </div>
+</div>
+
+<!-- Reading Activity Section -->
+<div class="analytics-section">
+  <h3>Recent Reading Activity</h3>
+  <div class="activity-list">
+    <% if (books.length === 0) { %>
+      <div class="empty-state">
+        <p>No reading activity yet. Start adding books to track your progress!</p>
+      </div>
+    <% } else { %>
+      <% books.slice(0, 10).forEach(book => { %>
+        <div class="activity-item">
+          <div class="activity-cover">
+            <% if (book.cover_id) { %>
+              <img 
+                src="https://covers.openlibrary.org/b/id/<%= book.cover_id %>-S.jpg" 
+                alt="<%= book.title %>"
+                onerror="this.style.display='none'; this.nextElementSibling.classList.remove('activity-cover-hidden');"
+              >
+              <div class="activity-cover-placeholder activity-cover-hidden">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+              </div>
+            <% } else { %>
+              <div class="activity-cover-placeholder">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+              </div>
+            <% } %>
+          </div>
+          <div class="activity-details">
+            <h4><%= book.title %></h4>
+            <p class="activity-author"><%= book.author %></p>
+            <div class="activity-meta">
+              <% if (book.rating) { %>
+                <span class="activity-rating">
+                  <% for (let i = 1; i <= 5; i++) { %>
+                    <span class="star <%= i <= book.rating ? 'filled' : '' %>">★</span>
+                  <% } %>
+                </span>
+              <% } %>
+              <% if (book.date_read) { %>
+                <span class="activity-date"><%= new Date(book.date_read).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</div>
+
+<!-- Rating Distribution -->
+<div class="analytics-section">
+  <h3>Rating Distribution</h3>
+  <div class="rating-distribution">
+    <% const ratingCounts = {5: 0, 4: 0, 3: 0, 2: 0, 1: 0}; %>
+    <% books.forEach(book => { if (book.rating) ratingCounts[book.rating]++; }); %>
+    <% const totalRated = Object.values(ratingCounts).reduce((a, b) => a + b, 0); %>
+    
+    <% for (let i = 5; i >= 1; i--) { %>
+      <div class="rating-bar">
+        <div class="rating-label">
+          <span><%= i %> ★</span>
+        </div>
+        <div class="rating-track">
+          <div class="rating-fill" data-width="<%= totalRated > 0 ? (ratingCounts[i] / totalRated * 100) : 0 %>"></div>
+        </div>
+        <div class="rating-count"><%= ratingCounts[i] %></div>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script>
+  // Set rating fill widths from data attributes
+  document.querySelectorAll('.rating-fill').forEach(fill => {
+    const width = fill.getAttribute('data-width');
+    if (width) {
+      fill.style.width = width + '%';
+    }
+  });
+</script>
