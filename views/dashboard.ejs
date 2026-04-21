@@ -57,6 +57,10 @@
             <p class="book-date">Read: <%= new Date(book.date_read).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></p>
           <% } %>
           
+          <% if (book.days_to_read) { %>
+            <p class="book-date">Read in <%= book.days_to_read %> day<%= book.days_to_read > 1 ? 's' : '' %></p>
+          <% } %>
+          
           <% if (book.notes) { %>
             <p class="book-notes"><%= book.notes.substring(0, 100) %><%= book.notes.length > 100 ? '...' : '' %></p>
           <% } %>

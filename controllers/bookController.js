@@ -46,7 +46,7 @@ exports.getAnalytics = async (req, res) => {
 // Create a new book
 exports.createBook = async (req, res) => {
   try {
-    const { title, author, rating, notes, date_read, cover_id } = req.body;
+    const { title, author, rating, notes, date_read, cover_id, days_to_read } = req.body;
     
     // Validate required fields
     if (!title || !author) {
@@ -56,13 +56,22 @@ exports.createBook = async (req, res) => {
       });
     }
     
+    // Validate days_to_read is provided and positive
+    if (!days_to_read || parseInt(days_to_read) < 1) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Days to read is required and must be at least 1' 
+      });
+    }
+    
     const bookData = {
       title,
       author,
       rating: rating || null,
       notes: notes || '',
       date_read: date_read || null,
-      cover_id: cover_id || ''
+      cover_id: cover_id || '',
+      days_to_read: parseInt(days_to_read)
     };
     
     const newBook = await Book.create(bookData);
@@ -85,7 +94,7 @@ exports.createBook = async (req, res) => {
 exports.updateBook = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, author, rating, notes, date_read, cover_id } = req.body;
+    const { title, author, rating, notes, date_read, cover_id, days_to_read } = req.body;
     
     // Validate required fields
     if (!title || !author) {
@@ -95,13 +104,22 @@ exports.updateBook = async (req, res) => {
       });
     }
     
+    // Validate days_to_read is provided and positive
+    if (!days_to_read || parseInt(days_to_read) < 1) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Days to read is required and must be at least 1' 
+      });
+    }
+    
     const bookData = {
       title,
       author,
       rating: rating || null,
       notes: notes || '',
       date_read: date_read || null,
-      cover_id: cover_id || ''
+      cover_id: cover_id || '',
+      days_to_read: parseInt(days_to_read)
     };
     
     const updatedBook = await Book.update(id, bookData);

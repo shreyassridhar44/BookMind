@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('date_read').value = bookData.date_read || '';
       document.getElementById('cover_id').value = bookData.cover_id || '';
       document.getElementById('notes').value = bookData.notes || '';
+      document.getElementById('days_to_read').value = bookData.days_to_read || 1;
     } else {
       modalTitle.textContent = 'Add New Book';
       submitBtn.textContent = 'Add Book';
@@ -78,7 +79,8 @@ document.addEventListener('DOMContentLoaded', function() {
       rating: formData.get('rating') ? parseInt(formData.get('rating')) : null,
       date_read: formData.get('date_read') || null,
       cover_id: formData.get('cover_id') || '',
-      notes: formData.get('notes') || ''
+      notes: formData.get('notes') || '',
+      days_to_read: formData.get('days_to_read') ? parseInt(formData.get('days_to_read')) : 1
     };
     
     const bookId = document.getElementById('bookId').value;

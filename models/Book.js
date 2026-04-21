@@ -27,14 +27,14 @@ class Book {
 
   // Create a new book
   static async create(bookData) {
-    const { title, author, rating, notes, date_read, cover_id } = bookData;
+    const { title, author, rating, notes, date_read, cover_id, days_to_read } = bookData;
     
     const query = `
-      INSERT INTO books (title, author, rating, notes, date_read, cover_id)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO books (title, author, rating, notes, date_read, cover_id, days_to_read)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
     
-    const values = [title, author, rating, notes, date_read, cover_id];
+    const values = [title, author, rating, notes, date_read, cover_id, days_to_read || 1];
     const [result] = await pool.query(query, values);
     
     // Return the newly created book
@@ -43,15 +43,15 @@ class Book {
 
   // Update an existing book
   static async update(id, bookData) {
-    const { title, author, rating, notes, date_read, cover_id } = bookData;
+    const { title, author, rating, notes, date_read, cover_id, days_to_read } = bookData;
     
     const query = `
       UPDATE books 
-      SET title = ?, author = ?, rating = ?, notes = ?, date_read = ?, cover_id = ?
+      SET title = ?, author = ?, rating = ?, notes = ?, date_read = ?, cover_id = ?, days_to_read = ?
       WHERE id = ?
     `;
     
-    const values = [title, author, rating, notes, date_read, cover_id, id];
+    const values = [title, author, rating, notes, date_read, cover_id, days_to_read || 1, id];
     await pool.query(query, values);
     
     // Return the updated book
